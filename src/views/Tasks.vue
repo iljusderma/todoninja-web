@@ -109,6 +109,7 @@
                     </div>
                 </div>
                 <task-item v-for="task of showDone ? doneTasks : []" :key="task.id" :task="task" />
+                <div v-if="showDone || (showPostponed && doneTasks.length < 1)" class="h-8" key="spacing298734"></div>
             </transition-group>
         </div>
         <task-creator-dialog :task="newTask" v-slot="{ open }" @saved="newTaskSaved()">
@@ -152,7 +153,7 @@ const normalTasks = await asyncRef(async () => [
         .where('deadlineAt', '!=', null)
         .orderBy('deadlineAt', 'asc')
         .get()),
-    ...(await list.value.tasks().query().where(undoneScope).where('deadlineAt', '==', null).get()),
+    ...(await list.value.tasks().query().where(normalScope).where('deadlineAt', '==', null).get()),
 ])
 const upcomingTasks = await asyncRef(() =>
     list.value.tasks().query().where(upcomingScope).orderBy('postponedUntil', 'asc').get()

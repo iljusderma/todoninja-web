@@ -44,7 +44,11 @@ export const undoneScope = Task.scope((query) => query.where('doneAt', '>', Date
 export const upcomingScope = Task.scope((query) =>
     query.where(undoneScope).andWhere('postponedUntil', '>', DateTime.now().endOf('day'))
 )
-export const normalScope = Task.scope((query) => query.where(undoneScope))
+export const normalScope = Task.scope((query) =>
+    query
+        .where(undoneScope)
+        .andWhere((query) => query.where('postponedUntil', null).orWhere('postponedUntil', '<=', DateTime.now()))
+)
 
 instanceForSource(Task)
 

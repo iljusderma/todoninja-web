@@ -1,5 +1,5 @@
 import { attribute } from '@opaquejs/opaque'
-import { BaseModel, date, inMemoryAdapter, instanceForSource, localStorageAdapter } from './Base'
+import { BaseModel, date, datetime, inMemoryAdapter, instanceForSource, localStorageAdapter } from './Base'
 import { List } from './List'
 import { CombinedAdapter } from './adapters/CombinedAdapter'
 import { ReactiveMap } from './VueModel'
@@ -12,8 +12,8 @@ export class Task extends BaseModel {
     @attribute()
     public title: string = ''
 
-    @attribute()
-    public done: boolean = false
+    @datetime()
+    public doneAt: DateTime | null = null
 
     @attribute()
     public listId: number | null = null
@@ -39,24 +39,12 @@ export class Task extends BaseModel {
     }
 }
 
-export const doneScope = Task.scope((query) => query.where('done', true))
-export const undoneScope = Task.scope((query) => query.where('done', false))
+export const doneScope = Task.scope((query) => query.where('doneAt', '<=', DateTime.now()))
+export const undoneScope = Task.scope((query) => query.where('doneAt', '>', DateTime.now()).orWhere('doneAt', null))
 export const upcomingScope = Task.scope((query) =>
     query.where(undoneScope).andWhere('postponedUntil', '>', DateTime.now().endOf('day'))
 )
-export const overdueScope = Task.scope((query) =>
-    query.where(undoneScope).andWhere('deadlineAt', '<', DateTime.now().startOf('day'))
-)
-export const nowScope = Task.scope((query) =>
-    query
-        .where(undoneScope)
-        .andWhere((query) =>
-            query.where('postponedUntil', null).orWhere('postponedUntil', '<=', DateTime.now().endOf('day'))
-        )
-        .andWhere((query) =>
-            query.andWhere('deadlineAt', null).orWhere('deadlineAt', '>=', DateTime.now().startOf('day'))
-        )
-)
+export const normalScope = Task.scope((query) => query.where(undoneScope))
 
 instanceForSource(Task)
 

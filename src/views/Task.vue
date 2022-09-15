@@ -14,7 +14,7 @@
             </template>
         </TopAppBar>
         <div class="grid grid-cols-[auto_1fr] gap-4 items-center text-xl p-4 bg-surface">
-            <DoneCheckbox :value="task.done" @input="task.update({ done: $event })" />
+            <DoneCheckbox :value="task.doneAt" @input="(doneAt) => task.update({ doneAt })" />
             <input
                 type="text"
                 :value="task.title"

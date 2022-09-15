@@ -1,7 +1,7 @@
 <template>
-    <div @click.stop="$emit('input', true)" v-if="!value" :class="`w-4 h-4 border-2 ${borderClass} rounded`"></div>
+    <div @click.stop="() => doneClick()" v-if="!done" :class="`w-4 h-4 border-2 ${borderClass} rounded`"></div>
     <div
-        @click.stop="$emit('input', false)"
+        @click.stop="$emit('input', null)"
         v-else
         class="w-4 h-4 border-2 border-green-600 rounded bg-green-600 flex flex-row items-center justify-center"
     >
@@ -10,6 +10,14 @@
 </template>
 
 <script lang="ts" setup>
-withDefaults(defineProps<{ value: Boolean; borderClass?: string }>(), { borderClass: 'border-on-surface' })
-defineEmits(['input'])
+import { computed } from '@vue/reactivity'
+import { DateTime } from 'luxon'
+
+const props = withDefaults(defineProps<{ value: DateTime | null; borderClass?: string }>(), {
+    borderClass: 'border-on-surface',
+})
+const emit = defineEmits(['input'])
+
+const done = computed(() => props.value != null && props.value <= DateTime.now())
+const doneClick = () => emit('input', DateTime.now())
 </script>

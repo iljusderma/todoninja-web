@@ -61,11 +61,7 @@
         </div>
         <div class="mt-4 grid grid-rows-[1fr_auto]">
             <transition-group name="flip-list" tag="div">
-                <task-item v-for="task of overdueTasks" :task="task" :key="task.id" />
-                <div v-if="overdueTasks.length > 0" key="nowlabel" class="mb-2 text-sm mt-8 text-on-surface-variant">
-                    Now
-                </div>
-                <task-item v-for="task of nowTasks" :key="task.id" :task="task" />
+                <task-item v-for="task of normalTasks" :key="task.id" :task="task" />
             </transition-group>
             <transition-group name="flip-list" tag="div">
                 <div
@@ -125,7 +121,7 @@ import { computed, ref } from '@vue/runtime-core'
 import { asyncRef } from '../asyncRef'
 import TaskItem from '../components/TaskItem.vue'
 import { List } from '../models/List'
-import { doneScope, nowScope, overdueScope, upcomingScope } from '../models/Task'
+import { doneScope, normalScope, undoneScope, upcomingScope } from '../models/Task'
 import { groupBy } from '../helpers'
 import { DateTime } from 'luxon'
 import TaskCreatorDialog from '../components/TaskCreatorDialog.vue'
@@ -147,14 +143,20 @@ const list = await asyncRef(async () => {
     }
     return (await List.find(selectedListId.value)) || List.default()
 })
-const nowTasks = await asyncRef(() => list.value.tasks().query().where(nowScope).get())
+const normalTasks = await asyncRef(async () => [
+    ...(await list.value
+        .tasks()
+        .query()
+        .where(normalScope)
+        .where('deadlineAt', '!=', null)
+        .orderBy('deadlineAt', 'asc')
+        .get()),
+    ...(await list.value.tasks().query().where(undoneScope).where('deadlineAt', '==', null).get()),
+])
 const upcomingTasks = await asyncRef(() =>
     list.value.tasks().query().where(upcomingScope).orderBy('postponedUntil', 'asc').get()
 )
-const overdueTasks = await asyncRef(() =>
-    list.value.tasks().query().where(overdueScope).orderBy('deadlineAt', 'asc').get()
-)
-const doneTasks = await asyncRef(() => list.value.tasks().query().where(doneScope).get())
+const doneTasks = await asyncRef(() => list.value.tasks().query().where(doneScope).orderBy('doneAt', 'desc').get())
 
 const groupedUpcomingTasks = computed(() => groupBy(upcomingTasks.value, (task) => task.postponedUntil!.toISODate()))
 const showDone = ref(false)

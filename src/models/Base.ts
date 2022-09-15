@@ -48,6 +48,7 @@ export const queryEngine = new QueryEngine({
     comparators: {
         postponedUntil: (ctx) => new DateTimeComparator(ctx),
         deadlineAt: (ctx) => new DateTimeComparator(ctx),
+        doneAt: (ctx) => new DateTimeComparator(ctx),
     },
 })
 
@@ -72,4 +73,9 @@ export const date = <Type>(options: Partial<AttributeOptionsContract<Type>> = {}
     attribute({
         get: ((value: string) => (value ? DateTime.fromISO(value) : value)) as any,
         set: ((value: DateTime | null) => (value instanceof DateTime ? value.toISODate() : value)) as any,
+    })
+export const datetime = <Type>(options: Partial<AttributeOptionsContract<Type>> = {}) =>
+    attribute({
+        get: ((value: string) => (value ? DateTime.fromISO(value) : value)) as any,
+        set: ((value: DateTime | null) => (value instanceof DateTime ? value.toISO() : value)) as any,
     })

@@ -24,7 +24,8 @@
                 </template>
             </navigation-drawer>
             <div class="text-on-surface text-[22px] text-center">{{ list.name }}</div>
-            <Menu v-if="!list.isDefault()">
+            <div v-if="list.isDefault()" class="w-6"></div>
+            <Menu v-else>
                 <template #trigger="{ open }">
                     <i @click="open" class="hero dots-vertical solid text-on-surface-variant text-xl"></i>
                 </template>

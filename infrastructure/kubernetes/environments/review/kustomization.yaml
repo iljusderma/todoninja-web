@@ -1,8 +1,0 @@
-bases:
-    - ../preview
-
-patchesJson6902:
-    - target:
-          kind: Ingress
-          name: parchment-app
-      path: url-patch.yaml

@@ -1,6 +1,0 @@
-commonLabels:
-  app: parchment
-resources:
-  - deployment.yaml
-  - ingress.yaml
-  - service.yaml

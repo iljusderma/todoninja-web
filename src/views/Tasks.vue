@@ -1,5 +1,5 @@
 <template>
-    <div class="px-8 min-h-screen grid grid-rows-[auto_1fr] mb-32 text-on-background">
+    <div class="px-8 min-h-screen grid grid-rows-[auto_1fr] text-on-background">
         <notification-bar-color :color="scrolled ? 'surface-2' : 'surface'" />
         <div
             :class="`grid grid-cols-[auto_1fr_auto] -mx-8 ${

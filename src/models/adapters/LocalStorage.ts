@@ -12,7 +12,7 @@ class Collection {
         for (const item of items) {
             const pk = item[this.model.primaryKey] as PrimaryKeyValue
             if (!this.map.has(pk)) this.map.set(pk, {})
-            Object.assign(this.map.get(pk), item)
+            Object.assign(this.map.get(pk)!, item)
         }
         localStorage.setItem(this.model.name, JSON.stringify([...this.map.entries()]))
     }

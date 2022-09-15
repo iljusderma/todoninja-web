@@ -22,7 +22,6 @@
                         @click="
                             closeConfirmation()
                                 .then(() => closeOptions())
-                                .then(() => close())
                                 .then(() => deleteClick())
                         "
                         >Delete</TextButton

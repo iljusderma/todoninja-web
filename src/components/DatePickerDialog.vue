@@ -6,7 +6,7 @@
         <template #content="{ close }">
             <lit-datetime-picker-calendar
                 startOfWeek="1"
-                @input=" (e: {detail: Date}) => $emit('input', DateTime.fromJSDate(e.detail), close) "
+                @input=" (e: any) => $emit('input', DateTime.fromJSDate(e.detail), close) "
                 :value="value?.toJSDate()"
             ></lit-datetime-picker-calendar>
         </template>

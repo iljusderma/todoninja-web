@@ -8,7 +8,7 @@ All relevant files for development are located in the `code/` directory.
 When working with VS Code, you can use the devcontainer provided in `.devcontainer/`.
 ### Dev Server
 ```bash
-npm start
+npm run dev
 ```
 Will serve a dev server at `http://localhost:8080`.
 ### Building for production
